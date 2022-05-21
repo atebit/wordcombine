@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <style>
+        	body, html{ margin:10px; font-family:Verdana; }
+        	#output{ display:table; border:1px solid #CCC; }
+        	#output div.cell{ display:table-cell; padding:20px; border-right:1px solid #ccc; }
+        	
+        	.footer{ font-size:10px; }
+        	.options{ padding:10px; border:1px solid #CCC; }
+        </style>
+    </head>
+    <body>
+		<p class='options'>Create word combinations for naming shit...</p>
+		<p><b>Instructions:</b></p>
+    	<ol style="font-size:12px;"><li>Input your "base" word</li><li>Choose whether your word is before of after the listed word</li><li>Choose if there will be a space or not</li><li>Choose interesting or common word lists</li><li>Press "Do it!"</li></ol>
+		<p class='options'>Word: <input type="text" id="mainword"> | After?: <input type="checkbox" id="beforeafter" /> | Space?: <input type="checkbox" id="hasspace" /> | Interesting or not?: <input type="checkbox" id="common" />  | <input type="submit" value="Do it!" id="submit"></p>
+		
+				
+		<p><b id='typeofwords'>Interesting words:</b></p>
+		<div id="output">
+		
+		</div>
+    
+		<p class="footer">References: <a href="http://www.englishclub.com/vocabulary/common-words.htm">Common Words</a> and <a href="http://eqi.org/fw_neg.htm">Interesting words</a></p>
+
+    
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> 
+    
+    	<script type="text/javascript">
+    	
+    	var commonWordsList = [
+			{name: 'verbs', list: 'be,have,do,say,get,make,go,know,take,see,come,think,look,want,give,use,find,tell,ask,work,seem,feel,try,leave,call'},
+			{name: 'nouns', list: 'time,person,year,way,day,thing,man,world,life,hand,part,child,eye,woman,place,work,week,case,point,government,company,number,group,problem,fact'},
+			{name: 'adjectives', list: 'new,first,last,long,great,little,own,other,old,right,big,high,different,small,large,next,early,young,important,few,public,bad,same,able,good'},
+			{name: 'adverbs', list: 'up,so,out,just,now,how,then,more,also,here,well,only,very,even,back,there,down,still,in,as,too,when,never,really,most'},
+			{name: 'prepositions', list: 'of,in,to,for,with,on,at,from,by,about,as,into,like,through,after,over,between,out,against,during,without,before,under,around,among'},
+			{name: 'pronouns', list: 'it,I,you,he,they,we,she,who,them,me,him,one,her,us,something,nothing,anything,himself,everything,someone,themselves,everyone,itself,anyone,myself'},
+			{name: 'conjunctions', list: 'and,that,but,or,as,if,when,than,because,while,where,after,so,though,since,until,whether,before,although,nor,like,once,unless,now,except'},
+			{name: 'conjunctions', list: 'and,that,but,or,as,if,when,than,because,while,where,after,so,though,since,until,whether,before,although,nor,like,once,unless,now,except'},		
+			{name: 'numbers', list: 'one,two,first,last,three,next,million,four,five,second,six,third,billion,hundred,thousand,seven,eight,ten,nine,dozen,fourth,twenty,fifth,thirty'},
+			{name: 'interjections', list: 'yes,oh,yeah,no,hey,hi,hello,hmm,ah,wow'}
+		];
+		
+		var interestingWordsList = [
+			{name:"a", list:'abandoned,abused,accused,addicted,afraid,aggravated,aggressive,alone,angry,anguish,annoyed,anxious,apprehensive,argumentative,artificial,ashamed,assaulted,atrocious,attacked,avoided,awful,awkward'},
+			{name:"b", list:'bad,badgered,baffled,banned,barren,beat,beaten,belittled,berated,betrayed,bitched,bitter,bizzare,blacklisted,blackmailed,blamed,bleak,blown,blur,bored,boring,bossed-around,bothered,bothersome,bounded,boxed-in,broken,bruised,brushed-off,bugged,bullied,bummed,burdened,burdensome,burned,burned-out'},
+			{name:"c", list:'caged,careless,chaotic,chased,cheated,chicken,claustrophobic,clingy,closed,clueless,clumsy,coaxed,codependent,coerced,cold,cold-hearted,combative,commanded,compared,competitive,compulsive,conceited,concerned,condescended,confined,conflicted,confronted,confused,conned,consumed,contemplative,contempt,contentious,controlled,convicted,cornered,corralled,cowardly,crabby,cramped,cranky,crap,crappy,crazy,creeped,creepy,critical,criticized,cross,crowded,cruddy,crummy,crushed,cut-down,cut-off,cynical'},
+			{name:"d", list:'damaged,damned,dangerous,dark,dazed,dead,deceived,deep,defamed,defeated,defective,defenseless,defensive,defiant,deficient,deflated,degraded,dehumanized,dejected,delicate,deluded,demanding,demeaned,demented,demoralized,demotivated,dependent,depleted,depraved,depressed,deprived,deserted,deserving,desolate,despair,despairing,desperate,despicable,despised,destroyed,destructive,detached,detest,detestable,detested,devalued,devastated,deviant,devoid,diagnosed,dictated,different,difficult,directionless,dirty,disabled'},
+			{name:"d", list:'disagreeable,disappointed,disappointing,disapproved of,disbelieved,discardable,discarded,disconnected,discontent,discouraged,discriminated,disdain,disdainful,disempowered,disenchanted,disgraced,disgruntled,disgust,disgusted,disheartened,dishonest,dishonorable,disillusioned,dislike,disliked,dismal,dismayed,disorganized,disoriented,disowned,displeased,disposable,disregarded,disrespected,dissatisfied,distant,distracted,distraught,distressed,disturbed,dizzy,dominated,doomed,double-crossed,doubted,doubtful,down,down and out,down in the dumps,downhearted,downtrodden,drained,dramatic,dread,dreadful,dreary,dropped,drunk,dry,dumb,dumped,dumped on,duped'},
+			{name:"e", list:'edgy,egocentric,egotistic,egotistical,elusive,emancipated,emasculated,embarrassed,emotional,emotionless,emotionally bankrupt,empty,encumbered,endangered,enraged,enslaved,entangled,evaded,evasive,evicted,excessive,excluded,exhausted,exploited,exposed'},
+			{name:"f", list:'failful,fake,false,fear,fearful,fed,flawed,forced,forgetful,forgettable,forgotten,fragile,freaked,frightened,frigid,frustrated,furious'},
+			{name:"g", list:'gloomy,glum,gothic,grey,grief,grim,gross,grossed-out,grotesque,grouchy,grounded,grumpy,guilt-tripped,guilty'},
+			{name:"h", list:'harassed,hard,hard-hearted,harmed,hassled,hate,hateful,hatred,haunted,heartbroken,heartless,heavy-hearted,helpless,hesitant,hideous,hindered,hopeless,horrible,horrified,horror,hostile,hot-tempered,humiliated,hung up,hung over,hurried,hurt,hysterical'},
+			{name:"i", list:'idiotic,ignorant,ignored,ill,ill-tempered,imbalanced,imposed-upon,impotent,imprisoned,impulsive,inactive,inadequate,incapable,incommunicative,incompetent,incompatible,incomplete,incorrect,indecisive,indifferent,indoctrinated,inebriated,ineffective,inefficient,inferior,infuriated,inhibited,inhumane,injured,injusticed,insane,insecure,insignificant,insincere,insufficient,insulted,intense,interrogated,interrupted,intimidated,intoxicated,invalidated,invisible,irrational,irritable,irritated,isolated'},
+			{name:"j", list:'jaded,jealous,jerked around,joyless,judged'},
+			{name:"l", list:'labeled,laughable,laughed,lazy,leaned,lectured,left,letdown,lied,limited,little,lonely,lonesome,longing,lost,lousy,loveless,low'},
+			{name:"m", list:'mad,man handled,manipulated,masochistic,messy,miffed,miserable,misled,mistaken,mistreated,mistrusted,misunderstood,mixed-up,mocked,molested,moody'},
+			{name:"n", list:'nagged,needy,negative,nervous,neurotic,nonconforming,numb,nuts,nutty'},
+			{name:'o', list:'objectified,obligated,obsessed,obsessive,obstructed,odd,offended,on display,opposed,oppressed,out of place,out of touch,over-controlled,over-protected,overwhelmed'},
+			{name:'p', list:'pain,panic,paranoid,passive,pathetic,pessimistic,petrified,phony,picked,pissed,pissed,plain,played,pooped,poor,powerless,pre-judged,preached,preoccupied,predjudiced,pressured,prosecuted,provoked,psychopathic,psychotic,pulled,punished,pushed,puzzled'},
+			{name:'q', list:'quarrelsome,queer,questioned,quiet'},
+			{name:'r', list:'rage,raped,rattled,regret,rejected,resented,resentful,responsible,retarded,revengeful,ridiculed,ridiculous,robbed,rotten'},
+			{name:"s", list:'sad,sadistic,sarcastic,scared,scarred,screwed,screwed over,screwed up,self-centered,self-conscious,self-destructive,self-hatred,selfish,sensitive,shouted at,shy,singled-out,slow,small,smothered,snapped at,spiteful,stereotyped,strange,stressed,stretched,stuck,stupid,submissive,suffering,suffocated,suicidal,superficial,suppressed,suspicious'}
+		]
+		
+		jQuery(document).ready(function(){
+			$("#submit").click(function(e){
+				e.preventDefault();
+				var wordslist = ($("#common").is(':checked')) ? commonWordsList : interestingWordsList;
+				
+				if($("#common").is(':checked')) $("#typeofwords").html("Common words:");
+				else $("#typeofwords").html("Interesting words:");
+				
+				var s = $("#mainword").val().toLowerCase();
+				var b = $("#beforeafter").is(':checked');
+				var spc = ($("#hasspace").is(':checked')) ? "&nbsp;" : "";
+				
+				var o = '';
+			
+				for(var i=0; i<wordslist.length; i++){
+					o += "<div class='cell'>";
+					o += "<p><b>"+wordslist[i].name+"</b></p>";
+					o += "<p>";
+					// split words
+					var list = wordslist[i].list.split(',');
+					for(var j=0; j<list.length; j++){
+						if(b) o += list[j] + spc + s + "<br/>";
+						else o += s + spc + list[j] + "<br/>";
+					}
+					o += "</p>";
+					o += "</div>";
+				}
+				
+				$("#output").html(o);
+			
+			});
+		});
+    	</script>
+    </body>
+</html>
